@@ -1,26 +1,112 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+<link rel="stylesheet" href="index.css">
+
 <head>
-    <meta charset="UTF-8">
-    <title>訪客計數器範例</title>
+  <meta charset="UTF-8">
+  <title>Supabase 測試</title>
 </head>
 <body>
-    <h1>歡迎來到我的網站！</h1>
-    <p>這個網站已被 <span id="count">載入中...</span> 人次觀看。</p>
+  <h1>Supabase 資料表內容</h1>
+  <div id="back" style="width:100%;height:100%"></div>
+<div id="read"><h1 id="read_data">
+  </h1>
+  <h2 id="text"></h2>
+  <ul id="read_list"></ul>
+</div>
+   
+  
+  
+</div>
+  
+  
 
-    <script>
-        // 使用你自己的 slug
-        const slug = 'first-counter-2542';
 
-        fetch(`https://api.countapi.xyz/hit/yoyo10231224/${slug}`)
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById('count').textContent = data.value;
-        })
-        .catch(err => {
-            console.error(err);
-            document.getElementById('count').textContent = "無法取得數據";
-        });
-    </script>
+
+
+  <script type="module">
+    // 用 ES Module 方式載入 v2 SDK
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.34.0/+esm';
+
+    const supabaseUrl = 'https://otcwzjuyafoiiwwqzivx.supabase.co';
+    const supabaseKey = 'sb_publishable_PooP96FLRaqj_IZm4ZmTpQ_0ruIi6Is';
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    document.getElementById("back").style.backgroundColor="rgba(120,120,120,1)"
+
+  function s(x){
+    console.log(x)
+  }
+
+  const { data: datas, error } = await supabase.from('listssss').select('id,name,password');
+  console.log(JSON.stringify(datas,null,2))
+  
+    function canlook(item){
+    const div=document.createElement("div")
+    div.id=`${item.id}`
+    div.style.width="100%"
+    div.style.height="25px"
+    div.style.backgroundColor="rgba(120,120,120,0.6)"
+    div.style.borderRadius="12px"
+    div.style.padding="8px 12px"
+    div.style.marginBottom= "8px"
+    div.style.border="2px solid rgba(50,50,50,0.6)"
+
+    const texts = document.createElement("span")
+      texts.textContent=`id:${item.id}  name:${item.name}  passwork:${item.password}`
+
+    const btn=document.createElement("button")
+    btn.onclick=s(item.id)
+    btn.textContent="del"
+    
+    
+    div.appendChild(texts);
+    div.appendChild(btn)
+    document.getElementById("read").appendChild(div)
+    
+  }
+  datas.forEach(canlook)
+
+
+  supabase
+  .channel('listssss')
+  .on('postgres_changes', { event: 'DELETE', schema:'public', table:'listssss' }, payload => {
+  const li = document.getElementById(`${payload.old.id}`);
+  if(li) li.remove();
+  })
+  .on(
+    'postgres_changes',
+    { event: 'INSERT', schema: 'public', table: 'listssss' },
+    (payload) => {
+      canlook(payload.new)
+    }
+  )
+  
+  .subscribe()
+
+  
+
+
+    
+
+      
+    
+
+    
+
+    window.drew= async function(name,passed) {
+        if (!name || !passed){alert("輸入不能為空")}
+        else{
+        const { data, error } = await supabase
+        .from('listssss') 
+        .insert([{ name, password: passed }])
+        .select()
+
+        datas.push(...data)
+        
+        }
+    }
+
+  </script>
 </body>
 </html>

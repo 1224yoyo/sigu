@@ -1,0 +1,17 @@
+/* 全局字型 */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #ffffff; /* 白色文字，深色背景會漂亮 */
+  margin: 0;
+  padding: 0;
+  background-color: rgba(50,50,50,1);
+}
+
+/* 卡片文字 */
+.card {
+  font-family: 'Courier New', monospace; /* 或使用等寬字讓資料對齊 */
+  font-weight: 500;   /* 適中粗細 */
+  font-size: 16px;    /* 調整大小 */
+  color: #ffffff;     /* 白色文字 */
+  line-height: 1.5;   /* 行高 */
+}
