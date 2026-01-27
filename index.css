@@ -9,9 +9,99 @@ body {
 
 /* 卡片文字 */
 .card {
-  font-family: 'Courier New', monospace; /* 或使用等寬字讓資料對齊 */
-  font-weight: 500;   /* 適中粗細 */
-  font-size: 16px;    /* 調整大小 */
+  
+  font-weight: 300;   /* 適中粗細 */
+  font-size: 18px;    /* 調整大小 */
   color: #ffffff;     /* 白色文字 */
   line-height: 1.5;   /* 行高 */
 }
+.card .button{
+  background-color: rgb(165, 164, 164);
+  position:absolute;
+  left:800px;
+  width:50px;
+  height:25px;
+  border-Radius:5px;
+  border:2px solid rgba(30,30,30,1);
+  letter-Spacing:0.5px;
+  transition:
+  transform 0.12s ease,
+  box-shadow 0.12s ease,
+  filter 0.12s ease;
+   cursor: pointer;
+    
+
+}
+.card .button:hover{
+transform: 0.05s ease;
+box-shadow: 0.05s ease;
+filter: 0.05s ease;
+}
+
+.card .button:active{
+  transform:translateY(1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,.25);
+  filter:brightness(0.95);
+}
+
+#main_btn, #chat_btn {
+  /* 1. 統一大小與間距 */
+  width: 140px;           /* 設定固定寬度讓按鈕等寬 */
+  height: 45px;           /* 設定高度 */
+  margin: 10px 5px;       /* 增加一點外邊距，防止按鈕黏在一起 */
+  
+  /* 2. 圓角與邊框 (讓視覺變柔和) */
+  border-radius: 12px;    /* 稍微大一點的圓角更現代 */
+  border: none;           /* 去掉生硬的黑邊框 */
+  
+  /* 3. 字體與顏色 */
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background-color: #2563eb; /* 稍微深一點、質感較好的藍色 */
+  
+  /* 4. 交互細節 */
+  cursor: pointer;
+  transition: all 0.2s ease; /* 增加過場動畫 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* 增加立體感 */
+}
+
+/* 懸停效果：讓按鈕被滑鼠指到時有回饋 */
+#main_btn:hover, #chat_btn:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px); /* 輕微往上浮動 */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* 點擊效果 */
+#main_btn:active, #chat_btn:active {
+  transform: translateY(0px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/*---------------------------------------------------*/
+#chat_box{
+  position: absolute;
+  top:160px;
+  left:300px;
+  width: 600px;
+  height: 700px;
+  background-color: #5b5b5b;
+}
+
+#chat_box_ul {
+  list-style: none;
+  padding: 1;
+  margin: 1;
+  white-space: pre-wrap;      /* 允許換行 + 保留換行符 */
+  word-break: break-word; 
+}
+
+
+
+
+
+
+
+
+
