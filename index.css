@@ -43,7 +43,7 @@ filter: 0.05s ease;
   box-shadow: 0 2px 6px rgba(0,0,0,.25);
   filter:brightness(0.95);
 }
-
+ 
 #main_btn, #chat_btn {
   /* 1. 統一大小與間距 */
   width: 140px;           /* 設定固定寬度讓按鈕等寬 */
