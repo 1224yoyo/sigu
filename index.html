@@ -1,28 +1,37 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-<link rel="stylesheet" href="index.css">
-
 <head>
   <meta charset="UTF-8">
   <title>Supabase 測試</title>
+  <link rel="stylesheet" href="index.css">
 </head>
 <body>
-  <h1>Supabase 資料表內容</h1>
-  <div id="back" style="width:100%;height:100%"></div>
-<div id="read"><h1 id="read_data">
-  </h1>
-  <h2 id="text"></h2>
-  <ul id="read_list"></ul>
-</div>
-   
-  
-  
-</div>
-  
-  
 
+  <button id="main_btn">data</button>
+  <button id="chat_btn">chat</button>
 
+  <div id="chat" style="display: None;">
+    <t1>請輸入誆稱:<input id="chat_name"></t1>
+    <input id="chat_text">
+    <button id="chat_btn" onclick="window.add(2)">發送</button>
+    <h1 style="position:absolute;left:300px;top:90px;">聊天室</h1>
+    <div id="chat_box">
+      <ul id="chat_box_ul" ></ul>
+    </div>
+  </div>
 
+  <div id="main" style="display:block;">
+    <h1>Supabase 資料表內容</h1>
+    <div id="back" style="width:100%;height:100%"></div>
+
+    <div id="read">
+      <h1 id="read_data"></h1>
+      <h2 id="text"></h2>
+      <ul id="read_list"></ul>
+      <br>
+      <button style="border-radius:8px;width:40px;height:35px;" onclick="window.add(1)">+</button>
+    </div>
+  </div>
 
   <script type="module">
     // 用 ES Module 方式載入 v2 SDK
@@ -32,79 +41,125 @@
     const supabaseKey = 'sb_publishable_PooP96FLRaqj_IZm4ZmTpQ_0ruIi6Is';
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    document.getElementById("back").style.backgroundColor="rgba(120,120,120,1)"
-
-  function s(x){
-    console.log(x)
-  }
-
-  const { data: datas, error } = await supabase.from('listssss').select('id,name,password');
-  console.log(JSON.stringify(datas,null,2))
-  
-    function canlook(item){
-    const div=document.createElement("div")
-    div.id=`${item.id}`
-    div.style.width="100%"
-    div.style.height="25px"
-    div.style.backgroundColor="rgba(120,120,120,0.6)"
-    div.style.borderRadius="12px"
-    div.style.padding="8px 12px"
-    div.style.marginBottom= "8px"
-    div.style.border="2px solid rgba(50,50,50,0.6)"
-
-    const texts = document.createElement("span")
-      texts.textContent=`id:${item.id}  name:${item.name}  passwork:${item.password}`
-
-    const btn=document.createElement("button")
-    btn.onclick=s(item.id)
-    btn.textContent="del"
     
-    
-    div.appendChild(texts);
-    div.appendChild(btn)
-    document.getElementById("read").appendChild(div)
-    
-  }
-  datas.forEach(canlook)
+
+    document.getElementById("back").style.backgroundColor = "rgba(120,120,120,1)";
+
+    document.getElementById("main_btn").addEventListener("click",()=>{
+      document.getElementById("chat").style.display="None";
+      document.getElementById("main").style.display="block"}
+    )
+
+    document.getElementById("chat_btn").addEventListener("click",()=>{
+      document.getElementById("main").style.display="None";
+      document.getElementById("chat").style.display="block"}
+    )
 
 
-  supabase
-  .channel('listssss')
-  .on('postgres_changes', { event: 'DELETE', schema:'public', table:'listssss' }, payload => {
-  const li = document.getElementById(`${payload.old.id}`);
-  if(li) li.remove();
-  })
-  .on(
-    'postgres_changes',
-    { event: 'INSERT', schema: 'public', table: 'listssss' },
-    (payload) => {
-      canlook(payload.new)
+    async function dels(id) {
+      const { data: datas, error } = await supabase.from('listssss').delete().eq('id', id);
     }
-  )
-  
-  .subscribe()
 
-  
-
-
+    window.add = async function (i) {
+      if(i===1){
+      let names = prompt("name:");
+      let texts = prompt("text:");
+      const { error } = await supabase.from('listssss').insert({ name: names, text: texts });}
+      if(i===2){
+        let names=document.getElementById("chat_name").value
+        let texts=document.getElementById("chat_text").value
+        const { error } = await supabase.from('listssss').insert({ name: names, text: texts });}
+      }
     
 
+
+    const { data: datas, error } = await supabase.from('listssss').select('id,name,text');
+    console.log(JSON.stringify(datas, null, 2));
+
+    function canlook(item) {
+      let div = document.createElement("div");
+      div.id = `${item.id}`;
+      div.style.width = "95%";
+      div.style.height = "25px";
+      div.style.backgroundColor = "rgba(120,120,120,0.6)";
+      div.style.borderRadius = "12px";
+      div.style.padding = "8px 12px";
+      div.style.marginBottom = "8px";
+      div.style.border = "2px solid rgba(50,50,50,0.6)";
+      div.className = "card";
+
+      const text_id = document.createElement("span");
+      text_id.textContent = `id${item.id}  `;
+      text_id.style = "position:absolute;left:20px";
+
+      const text_name = document.createElement("span");
+      if(item.text.length>10){var n=item.text.slice(0,10)+"..."}else{var n=item.name}
+
+      text_name.textContent = `name:  ${n}`;
+      text_name.style = "position:absolute;left:220px";
+
+      const text_password = document.createElement("span");
+      if(item.text.length>10){var t=item.text.slice(0,10)+"..."}else{var t=item.text}
+
+      text_password.textContent = `text:  ${t}  `;
+      text_password.style = "position:absolute;left:420px";
+
+      let btn = document.createElement("button");
+      btn.className = "button";
+      btn.onclick = () => dels(item.id);
+      btn.textContent = "del";
+
+      div.appendChild(text_id);
+      div.appendChild(text_name);
+      div.appendChild(text_password);
+      div.appendChild(btn);
+      document.getElementById("read").appendChild(div);
+
+
+      //---------------------------------------------------------------------
+
+      const boxul = document.getElementById("chat_box_ul");
       
-    
-
-    
-
-    window.drew= async function(name,passed) {
-        if (!name || !passed){alert("輸入不能為空")}
-        else{
-        const { data, error } = await supabase
-        .from('listssss') 
-        .insert([{ name, password: passed }])
-        .select()
-
-        datas.push(...data)
+      // 假設 datas 是你從 Supabase 拿到的資料陣列
+      
+        const li = document.createElement("li");
+        li.textContent = `${item.name}說: ${item.text}`;
+        li.id=item.id
+        boxul.appendChild(li);
         
-        }
+      
+
+    }
+
+    datas.forEach(canlook);
+
+    supabase
+      .channel('listssss')
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'listssss' }, payload => {
+         const div = document.getElementById(`${payload.old.id}`);
+          if(div) {div.remove();}
+        const bowul = document.getElementById(`${payload.old.id}`);
+          if(bowul) {bowul.remove();}
+        
+      })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'listssss' }, payload => {
+        
+        canlook(payload.new);
+        
+      })
+      .subscribe();
+
+    window.drew = async function (name, passed) {
+      if (!name || !passed) {
+        alert("輸入不能為空");
+      } else {
+        const { data, error } = await supabase
+          .from('listssss')
+          .insert([{ name, text: passed }])
+          .select();
+
+        datas.push(...data);
+      }
     }
 
   </script>
