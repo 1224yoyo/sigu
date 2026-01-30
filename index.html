@@ -51,21 +51,34 @@ async function Renderdata() {
   }
 }
 Renderdata();
-async function Renderadd() {
-try{
-const res = await fetch("https://chat-ax5a.onrender.com/api/send", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    name: document.getElementById("chat_name").value,
-    text: document.getElementById("chat_text").value
-  })
-});
-const data = await res.json();
-console.log("送訊息後端回應：", data);
+async function testSend() {
+  try {
+    const res = await fetch("https://chat-ax5a.onrender.com/api/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: "測試", text: "123" })
+    });
 
-}catch(err) {console.log(err)}}
-document.getElementById("chat_btns").onclick=Renderadd
+    if(res.ok) {
+      const data = await res.json();
+      console.log("後端回應：", data);
+    } else {
+      const text = await res.text();
+      console.error("不是 JSON，伺服器回傳：", text, res.status);
+    }
+
+  } catch(err) {
+    console.error("Fetch 失敗：", err);
+  }
+}
+
+testSend();
+
+
+document.getElementById("chat_btns").addEventListener("click", async () => {
+  await Renderadd();
+});
+
 </script>
 
 </body>
