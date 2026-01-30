@@ -13,7 +13,7 @@
   <div id="chat" style="display: block;">
     <t1>請輸入誆稱:<input id="chat_name"></t1>
     <input id="chat_text">
-    <button id="chat_btn" onclick="window.add(2)">發送</button>
+    <button id="chat_btns" >發送</button>
     <h1 style="position:absolute;left:300px;top:90px;">聊天室</h1>
     <div id="chat_box">
       <ul id="chat_box_ul" ></ul>
@@ -34,7 +34,7 @@
   </div>
 
   <script type="module">
-async function testRender() {
+async function Renderdata() {
   try {
     const res = await fetch("https://chat-ax5a.onrender.com/api/hello");
     const data = await res.json();
@@ -50,8 +50,22 @@ async function testRender() {
     document.body.appendChild(h);
   }
 }
+Renderdata();
+async function Renderadd() {
+try{
+const res = await fetch("https://chat-ax5a.onrender.com/api/send", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    name: document.getElementById("chat_name").value,
+    text: document.getElementById("chat_text").value
+  })
+});
+const data = await res.json();
+console.log("送訊息後端回應：", data);
 
-testRender();
+}catch(err) {console.log(err)}}
+document.getElementById("chat_btns").onclick=Renderadd
 </script>
 
 </body>
