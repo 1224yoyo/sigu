@@ -34,150 +34,26 @@
   </div>
 
   <script type="module">
-    // 用 ES Module 方式載入 v2 SDK
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.34.0/+esm';
+async function testRender() {
+  try {
+    const res = await fetch("https://chat-ax5a.onrender.com/api/hello");
+    const data = await res.json();
+    console.log("Render 後端回應：", data);
 
-    const supabaseUrl = 'https://otcwzjuyafoiiwwqzivx.supabase.co';
-    const supabaseKey = 'sb_publishable_PooP96FLRaqj_IZm4ZmTpQ_0ruIi6Is';
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const h = document.createElement("h3");
+    h.textContent = "後端說：" + data.msg;
+    document.body.appendChild(h);
+  } catch(err) {
+    console.error("Render 連線失敗", err);
+    const h = document.createElement("h3");
+    h.textContent = "Render 連線失敗：" + err;
+    document.body.appendChild(h);
+  }
+}
 
-    
+testRender();
+</script>
 
-    document.getElementById("back").style.backgroundColor = "rgba(120,120,120,1)";
-
-    document.getElementById("main_btn").addEventListener("click",()=>{
-      document.getElementById("chat").style.display="None";
-      document.getElementById("main").style.display="block"}
-    )
-
-    document.getElementById("chat_btn").addEventListener("click",()=>{
-      document.getElementById("main").style.display="None";
-      document.getElementById("chat").style.display="block"}
-    )
-
-
-    async function dels(id) {
-      const { data: datas, error } = await supabase.from('listssss').delete().eq('id', id);
-    }
-
-    window.add = async function (i) {
-      if(i===1){
-      let names = prompt("name:");
-      let texts = prompt("text:");
-      const { error } = await supabase.from('listssss').insert({ name: names, text: texts });}
-      if(i===2){
-        let names=document.getElementById("chat_name").value
-        let texts=document.getElementById("chat_text").value
-        const { error } = await supabase.from('listssss').insert({ name: names, text: texts });}
-      }
-    
-
-
-    const { data: datas, error } = await supabase.from('listssss').select('id,name,text');
-    console.log(JSON.stringify(datas, null, 2));
-
-    function canlook(item) {
-      let div = document.createElement("div");
-      div.id = `${item.id}`;
-      div.style.width = "95%";
-      div.style.height = "25px";
-      div.style.backgroundColor = "rgba(120,120,120,0.6)";
-      div.style.borderRadius = "12px";
-      div.style.padding = "8px 12px";
-      div.style.marginBottom = "8px";
-      div.style.border = "2px solid rgba(50,50,50,0.6)";
-      div.className = "card";
-
-      const text_id = document.createElement("span");
-      text_id.textContent = `id${item.id}  `;
-      text_id.style = "position:absolute;left:20px";
-
-      const text_name = document.createElement("span");
-      if(item.text.length>10){var n=item.text.slice(0,10)+"..."}else{var n=item.name}
-
-      text_name.textContent = `name:  ${n}`;
-      text_name.style = "position:absolute;left:220px";
-
-      const text_password = document.createElement("span");
-      if(item.text.length>10){var t=item.text.slice(0,10)+"..."}else{var t=item.text}
-
-      text_password.textContent = `text:  ${t}  `;
-      text_password.style = "position:absolute;left:420px";
-
-      let btn = document.createElement("button");
-      btn.className = "button";
-      btn.onclick = () => dels(item.id);
-      btn.textContent = "del";
-
-      div.appendChild(text_id);
-      div.appendChild(text_name);
-      div.appendChild(text_password);
-      div.appendChild(btn);
-      document.getElementById("read").appendChild(div);
-
-
-      //---------------------------------------------------------------------
-
-      const boxul = document.getElementById("chat_box_ul");
-      
-      // 假設 datas 是你從 Supabase 拿到的資料陣列
-      
-        const li = document.createElement("li");
-        li.textContent = `${item.name}說: ${item.text}`;
-        li.id=item.id
-        boxul.appendChild(li);
-        
-      
-
-    }
-
-    datas.forEach(canlook);
-
-    supabase
-      .channel('listssss')
-      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'listssss' }, payload => {
-         const div = document.getElementById(`${payload.old.id}`);
-          if(div) {div.remove();}
-        const bowul = document.getElementById(`${payload.old.id}`);
-          if(bowul) {bowul.remove();}
-        
-      })
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'listssss' }, payload => {
-        
-        canlook(payload.new);
-        
-      })
-      .subscribe();
-
-    window.drew = async function (name, passed) {
-      if (!name || !passed) {
-        alert("輸入不能為空");
-      } else {
-        const { data, error } = await supabase
-          .from('listssss')
-          .insert([{ name, text: passed }])
-          .select();
-
-        datas.push(...data);
-      }
-    }
-
-
-
-    // ===== Render Backend 測試 =====
-fetch("https://chat.onrender.com/api/hello")
-  .then(res => res.json())
-  .then(data => {
-    console.log("Render 後端回應：", data)
-
-    const h = document.createElement("h3")
-    h.textContent = "後端說：" + data.msg
-    document.body.appendChild(h)
-  })
-  .catch(err => {
-    console.error("Render 連線失敗", err)
-  })
-
-  </script>
 </body>
 </html>
+
