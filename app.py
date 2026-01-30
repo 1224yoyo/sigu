@@ -4,7 +4,7 @@ from supabase import create_client
 import os
 
 app = Flask(__name__)
-CORS(app)
+CORS(app,resources={r"/*": {"origins": "*"}})
 
 supabase = create_client(
     os.environ["SUPABASE_URL"],
@@ -21,11 +21,13 @@ def hello():
 @app.route("/api/send", methods=["POST"])
 def send():
     data = request.json
-    supabase.table("listssss").insert({
+    print("收到的資料：", data)   # <- 加這行
+    supabase.table("chat").insert({
         "name": data["name"],
         "text": data["text"]
     }).execute()
     return jsonify({"ok": True})
+
 
 @app.route("/api/list")
 def list_msg():
@@ -33,5 +35,7 @@ def list_msg():
     return jsonify(res.data)
 
 
+
+    
 
 
