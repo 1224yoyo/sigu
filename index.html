@@ -162,6 +162,22 @@
       }
     }
 
+
+
+    // ===== Render Backend 測試 =====
+fetch("https://chat.onrender.com/api/hello")
+  .then(res => res.json())
+  .then(data => {
+    console.log("Render 後端回應：", data)
+
+    const h = document.createElement("h3")
+    h.textContent = "後端說：" + data.msg
+    document.body.appendChild(h)
+  })
+  .catch(err => {
+    console.error("Render 連線失敗", err)
+  })
+
   </script>
 </body>
 </html>
