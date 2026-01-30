@@ -1,86 +1,41 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-  <meta charset="UTF-8">
-  <title>Supabase 測試</title>
-  <link rel="stylesheet" href="css.css">
-</head>
-<body>
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from supabase import create_client
+import os
 
-  <button id="main_btn">data</button>
-  <button id="chat_btn">chat</button>
+app = Flask(__name__)
+CORS(app,resources={r"/*": {"origins": "*"}})
 
-  <div id="chat" style="display: block;">
-    <t1>請輸入誆稱:<input id="chat_name"></t1>
-    <input id="chat_text">
-    <button id="chat_btns" >發送</button>
-    <h1 style="position:absolute;left:300px;top:90px;">聊天室</h1>
-    <div id="chat_box">
-      <ul id="chat_box_ul" ></ul>
-    </div>
-  </div>
-
-  <div id="main" style="display:none;">
-    <h1>Supabase 資料表內容</h1>
-    <div id="back" style="width:100%;height:100%"></div>
-
-    <div id="read">
-      <h1 id="read_data"></h1>
-      <h2 id="text"></h2>
-      <ul id="read_list"></ul>
-      <br>
-      <button style="border-radius:8px;width:40px;height:35px;" onclick="window.add(1)">+</button>
-    </div>
-  </div>
-
-  <script type="module">
-async function Renderdata() {
-  try {
-    const res = await fetch("https://chat-ax5a.onrender.com/api/hello");
-    const data = await res.json();
-    console.log("Render 後端回應：", data);
-
-    const h = document.createElement("h3");
-    h.textContent = "後端說：" + data.msg;
-    document.body.appendChild(h);
-  } catch(err) {
-    console.error("Render 連線失敗", err);
-    const h = document.createElement("h3");
-    h.textContent = "Render 連線失敗：" + err;
-    document.body.appendChild(h);
-  }
-}
-Renderdata();
-async function testSend() {
-  try {
-    const res = await fetch("https://chat-ax5a.onrender.com/api/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: "測試", text: "123" })
-    });
-
-    if(res.ok) {
-      const data = await res.json();
-      console.log("後端回應：", data);
-    } else {
-      const text = await res.text();
-      console.error("不是 JSON，伺服器回傳：", text, res.status);
-    }
-
-  } catch(err) {
-    console.error("Fetch 失敗：", err);
-  }
-}
-
-testSend();
+supabase = create_client(
+    os.environ["SUPABASE_URL"],
+    os.environ["SUPABASE_KEY"]
+)
 
 
-document.getElementById("chat_btns").addEventListener("click", async () => {
-  await Renderadd();
-});
+@app.route("/api/hello")
+def hello():
+    print(555)
+    return jsonify({"msg": "Hello Render"})
+    
 
-</script>
+@app.route("/api/send", methods=["POST"])
+def send():
+    data = request.json
+    print("收到的資料：", data)   # <- 加這行
+    supabase.table("chat").insert({
+        "name": data["name"],
+        "text": data["text"]
+    }).execute()
+    return jsonify({"ok": True})
 
-</body>
-</html>
+
+@app.route("/api/list")
+def list_msg():
+    res = supabase.table("chat").select("*").order("id").execute()
+    return jsonify(res.data)
+
+
+
+    
+
 
