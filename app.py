@@ -21,7 +21,7 @@ def hello():
 @app.route("/api/send", methods=["POST"])
 def send():
     data = request.json
-    supabase.table("chat").insert({
+    supabase.table("listssss").insert({
         "name": data["name"],
         "text": data["text"]
     }).execute()
@@ -31,3 +31,7 @@ def send():
 def list_msg():
     res = supabase.table("chat").select("*").order("id").execute()
     return jsonify(res.data)
+
+
+
+
